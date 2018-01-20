@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class Painter : MonoBehaviour {
+    public RectTransform selector;
     private Color selectedColor = Color.white;
 
 	// Use this for initialization
@@ -23,6 +24,8 @@ public class Painter : MonoBehaviour {
                 if (gameObj.name == "paintBucket")
                 {
                     selectedColor = gameObj.GetComponent<Image>().color;
+                    selector.parent = gameObj.transform;
+                    selector.localPosition = Vector2.zero;
                 }
                 else
                 {

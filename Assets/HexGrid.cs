@@ -29,6 +29,8 @@ public class HexGrid : MonoBehaviour {
                 var obj = Instantiate<RectTransform>(spawnThis, this.transform);
                 obj.anchoredPosition = hexpos;// + new Vector2(unitLength, unitLength);
                 obj.localRotation = Quaternion.identity;
+                Hex h = obj.gameObject.AddComponent<Hex>();
+                h.Assign(i, j);
             }
         }
     }

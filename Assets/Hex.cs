@@ -34,4 +34,10 @@ public class Hex : MonoBehaviour {
     {
         this.hexImage.color = selectedColor;
     }
+
+    internal void SetForegroundIcon(Sprite selectedIcon)
+    {
+        this.iconImage.enabled = selectedIcon != null;
+        this.iconImage.sprite = selectedIcon;
+    }
 }

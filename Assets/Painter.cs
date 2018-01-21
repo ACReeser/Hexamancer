@@ -5,8 +5,10 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class Painter : MonoBehaviour {
-    public RectTransform selector;
+    public RectTransform selector, detailListParent;
+    public Commander commander;
     private Color selectedColor = Color.white;
+    private Sprite selectedIcon;
 
 	// Use this for initialization
 	void Start () {
@@ -27,12 +29,38 @@ public class Painter : MonoBehaviour {
                     selector.parent = gameObj.transform;
                     selector.localPosition = Vector2.zero;
                 }
+                else if (gameObj.transform.parent == detailListParent)
+                {
+                    if (gameObj.transform.GetSiblingIndex() == 0)
+                    {
+                        selectedIcon = null;
+                    }
+                    else
+                    {
+                        selectedIcon = gameObj.transform.GetChild(1).GetComponent<Image>().sprite;
+                    }
+                }
                 else
                 {
                     var h = gameObj.transform.parent.GetComponent<Hex>();
-                    if (h != null)
+                    switch (commander.CurrentTool)
                     {
-                        h.SetBackgroundColor(selectedColor);
+                        case Tool.BackgroundPainter:
+                        {
+                            if (h != null)
+                            {
+                                h.SetBackgroundColor(selectedColor);
+                            }
+                            break;
+                        }
+                        case Tool.ForegroundIconPlacer:
+                        {
+                            if (h != null)
+                            {
+                                h.SetForegroundIcon(selectedIcon);
+                            }
+                            break;
+                        }
                     }
                 }
             }

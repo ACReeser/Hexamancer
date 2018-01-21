@@ -17,11 +17,11 @@ public class IconLister : MonoBehaviour {
 
     private void LibraryLister_OnLibraryChanged(Library newLib)
     {
-        int i = 0;
+        int i = 1;
         foreach(Sprite s in newLib.Icons)
         {
             RectTransform detail;
-            if (i < DetailList.childCount - 1)
+            if (i < DetailList.childCount - 2)
             {
                 detail = DetailList.GetChild(i) as RectTransform;
             }
@@ -29,6 +29,7 @@ public class IconLister : MonoBehaviour {
             {
                 detail = GameObject.Instantiate(DetailTemplate, DetailList) as RectTransform;
                 detail.GetComponent<Button>().onClick.AddListener(() => this.onDetailClick(i));
+                DetailTemplate.SetAsLastSibling();
             }
             detail.gameObject.SetActive(true);
             detail.GetChild(0).GetComponent<Text>().text = s.name;
@@ -37,9 +38,9 @@ public class IconLister : MonoBehaviour {
             i++;
         }
 
-        if (i < DetailList.childCount - 1)
+        if (i < DetailList.childCount - 2)
         {
-            for (int j = i; j < DetailList.childCount -1 ; j++)
+            for (int j = i; j < DetailList.childCount - 2 ; j++)
             {
                 DetailList.GetChild(j).gameObject.SetActive(false);
             }

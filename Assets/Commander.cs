@@ -22,4 +22,9 @@ public class Commander : MonoBehaviour {
     {
         CurrentTool = (Tool)index;
     }
+
+    public void EditHex()
+    {
+
+    }
 }

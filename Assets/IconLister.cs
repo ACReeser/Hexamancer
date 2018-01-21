@@ -32,6 +32,7 @@ public class IconLister : MonoBehaviour {
                 DetailTemplate.SetAsLastSibling();
             }
             detail.gameObject.SetActive(true);
+            detail.name = newLib.Name + "|" + s.name;
             detail.GetChild(0).GetComponent<Text>().text = s.name;
             detail.GetChild(1).GetComponent<Image>().sprite = s;
 

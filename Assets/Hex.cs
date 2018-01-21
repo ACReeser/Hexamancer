@@ -9,6 +9,8 @@ public class Hex : MonoBehaviour {
     private Text text;
     private Image hexImage, iconImage;
     private int hexX, hexY;
+    private string iconName;
+    private Color bgColor, fgColor;
 
 	// Use this for initialization
 	void Start () {
@@ -32,12 +34,16 @@ public class Hex : MonoBehaviour {
 
     internal void SetBackgroundColor(Color selectedColor)
     {
+        bgColor = selectedColor;
         this.hexImage.color = selectedColor;
     }
 
-    internal void SetForegroundIcon(Sprite selectedIcon)
+    internal void SetForegroundIcon(Sprite selectedIcon, string name, Color color)
     {
         this.iconImage.enabled = selectedIcon != null;
         this.iconImage.sprite = selectedIcon;
+        this.iconName = name;
+        this.iconImage.color = color;
+        this.fgColor = color;
     }
 }

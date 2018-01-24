@@ -29,7 +29,11 @@ public class InputOutput : MonoBehaviour {
 
     public IEnumerator LoadLibraries()
     {
-        string resourcePath = Path.Combine(Path.Combine(Application.dataPath.Replace('/', '\\'), "Resources"), "Libraries");
+        bool isWeb = Application.dataPath.StartsWith("http");
+        string basePath = Application.dataPath;
+        if (!isWeb)
+            basePath = basePath.Replace('/', '\\');
+        string resourcePath = Path.Combine(Path.Combine(basePath, "Resources"), "Libraries");
         string[] dirs = Directory.GetDirectories(resourcePath);//, "", SearchOption.TopDirectoryOnly);
 
         Library[] results = new Library[dirs.Length];

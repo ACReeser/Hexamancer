@@ -38,12 +38,16 @@ public class Hex : MonoBehaviour {
         this.hexImage.color = selectedColor;
     }
 
-    internal void SetForegroundIcon(Sprite selectedIcon, string name, Color color)
+    internal void SetForegroundColor(Color color)
+    {
+        this.iconImage.color = color;
+        this.fgColor = color;
+    }
+
+    internal void SetIcon(Sprite selectedIcon, string name)
     {
         this.iconImage.enabled = selectedIcon != null;
         this.iconImage.sprite = selectedIcon;
         this.iconName = name;
-        this.iconImage.color = color;
-        this.fgColor = color;
     }
 }

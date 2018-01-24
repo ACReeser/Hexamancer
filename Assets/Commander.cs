@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum Tool { None = 0, BackgroundPainter, ForegroundIconPlacer }
+public enum Tool { None = 0, BackgroundPainter, ForegroundPainter, IconPlacer, PaintedIconPlacerPainter, OmniPainter, NotesPen, Panner }
 public enum Detail { None = 0, Icons }
 
 public class Commander : MonoBehaviour {
     public Tool CurrentTool { get; private set; }
+    public Painter painterUI;
 
 	// Use this for initialization
 	void Start () {
@@ -18,9 +19,9 @@ public class Commander : MonoBehaviour {
 		
 	}
 
-    public void SetTool(int index)
+    public void SetTool(Tool tool)
     {
-        CurrentTool = (Tool)index;
+        CurrentTool = tool;
     }
 
     public void EditHex()

@@ -20,12 +20,12 @@ public class MouseMove : MonoBehaviour {
     private Vector3 InitPos;
     private Vector3 InitRotation;
     private float MinZoomZ, MaxZoomZ;
+
+    public Commander commander;
  
  
     public void Start()
     {
-        //Instantiate(Arrow, Vector3.zero, Quaternion.identity);
-
         InitPos = transform.position;
         InitRotation = transform.eulerAngles;
         TargetZoomZ = InitPos.z;
@@ -36,7 +36,7 @@ public class MouseMove : MonoBehaviour {
     public void Update()
     {
         //PAN
-        if (Input.GetMouseButton(2))
+        if (Input.GetMouseButton(2) || (commander.CurrentTool == Tool.Panner && Input.GetMouseButton(0)))
         {
             //(Input.mousePosition.x - Screen.width * 0.5)/(Screen.width * 0.5)
             transform.Translate(Vector3.right   * (Time.deltaTime * PanSpeed) * ((Input.mousePosition.x - Screen.width  * 0.5f) / (Screen.width * 0.5f)), Space.World);
@@ -62,15 +62,12 @@ public class MouseMove : MonoBehaviour {
                 transform.Translate(Vector3.up * Time.deltaTime * -ScrollSpeed, Space.World);
             }
         }
-
+        
         //ZOOM IN/OUT
         float newZoom = Input.GetAxis("Mouse ScrollWheel");
         if (newZoom != 0f)
         {
-            TargetZoomZ += newZoom * ZoomSpeed;
-            //print("zoom target: " + TargetZoomZ);
-            TargetZoomZ = Mathf.Clamp(TargetZoomZ, MaxZoomZ, MinZoomZ);
-            //print("capping zoom to: " + TargetZoomZ);
+            Zoom(newZoom);
         }
 
         if (TargetZoomZ != transform.position.z)
@@ -87,5 +84,13 @@ public class MouseMove : MonoBehaviour {
                 transform.position = new Vector3(transform.position.x, transform.position.y, z);
             }
         }
+    }
+
+    public void Zoom(float newZoomDelta)
+    {
+        TargetZoomZ += newZoomDelta * ZoomSpeed;
+        //print("zoom target: " + TargetZoomZ);
+        TargetZoomZ = Mathf.Clamp(TargetZoomZ, MaxZoomZ, MinZoomZ);
+        //print("capping zoom to: " + TargetZoomZ);
     }
 }

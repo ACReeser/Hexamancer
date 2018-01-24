@@ -6,10 +6,11 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class Painter : MonoBehaviour {
-    public RectTransform bgColorSelector, fgColorSelector, paintbucketParent, detailListParent;
+    public RectTransform bgColorSelector, fgColorSelector, paintbucketParent, detailListParent, selectedToolBorder;
     public Commander commander;
     public Image bgPreview, fgPreview;
     public Sprite noSpriteImage;
+    public Button[] ToolButtons;
     private Color selectedBGColor = Color.white;
     private Color selectedFGColor = Color.black;
     private Sprite selectedIcon;
@@ -30,7 +31,18 @@ public class Painter : MonoBehaviour {
                 rcb.onRightClick.AddListener(() => this.OnPaintBucketRightClick(b));
             }
         }
+        foreach(Button b in ToolButtons)
+        {
+            b.onClick.AddListener(() => SelectTool((Tool)b.transform.GetSiblingIndex() - 1));
+        }
 	}
+
+    private void SelectTool(Tool buttonI)
+    {
+        selectedToolBorder.parent = ToolButtons[Convert.ToInt32(buttonI)].transform;
+        selectedToolBorder.localPosition = Vector2.zero;
+        commander.SetTool(buttonI);
+    }
 
     private void OnPaintBucketLeftClick(Button b)
     {
@@ -39,44 +51,22 @@ public class Painter : MonoBehaviour {
         {
             if (gameObj.name == "paintBucket")
             {
-                selectedBGColor = gameObj.GetComponent<Image>().color;
-                bgColorSelector.parent = gameObj.transform;
-                bgColorSelector.localPosition = Vector2.zero;
-                bgPreview.color = selectedBGColor;
-            }
-            else if (gameObj.transform.parent == detailListParent)
-            {
-                if (gameObj.transform.GetSiblingIndex() == 0)
-                {
-                    selectedIcon = null;
-                }
-                else
-                {
-                    selectedIcon = gameObj.transform.GetChild(1).GetComponent<Image>().sprite;
-                    selectedIconName = gameObj.name;
-                }
-            }
-            else
-            {
-                var h = gameObj.transform.parent.GetComponent<Hex>();
                 switch (commander.CurrentTool)
                 {
                     case Tool.BackgroundPainter:
-                        {
-                            if (h != null)
-                            {
-                                h.SetBackgroundColor(selectedBGColor);
-                            }
-                            break;
-                        }
-                    case Tool.ForegroundIconPlacer:
-                        {
-                            if (h != null)
-                            {
-                                h.SetForegroundIcon(selectedIcon, selectedIconName, selectedFGColor);
-                            }
-                            break;
-                        }
+                        selectedBGColor = gameObj.GetComponent<Image>().color;
+                        bgColorSelector.parent = gameObj.transform;
+                        bgColorSelector.localPosition = Vector2.zero;
+                        bgPreview.color = selectedBGColor;
+                        break;
+                    case Tool.ForegroundPainter:
+                    case Tool.IconPlacer:
+                    case Tool.PaintedIconPlacerPainter:
+                        selectedFGColor = gameObj.GetComponent<Image>().color;
+                        fgColorSelector.parent = gameObj.transform;
+                        fgColorSelector.localPosition = Vector2.zero;
+                        fgPreview.color = selectedFGColor;
+                        break;
                 }
             }
         }
@@ -93,11 +83,13 @@ public class Painter : MonoBehaviour {
                 {
                     if (gameObj.transform.GetSiblingIndex() == 0)
                     {
+                        fgPreview.sprite = gameObj.transform.GetChild(1).GetComponent<Image>().sprite;
                         selectedIcon = null;
                     }
                     else
                     {
                         selectedIcon = gameObj.transform.GetChild(1).GetComponent<Image>().sprite;
+                        fgPreview.sprite = selectedIcon;
                         selectedIconName = gameObj.name;
                     }
                 }
@@ -114,11 +106,38 @@ public class Painter : MonoBehaviour {
                                 }
                                 break;
                             }
-                        case Tool.ForegroundIconPlacer:
+                        case Tool.ForegroundPainter:
                             {
                                 if (h != null)
                                 {
-                                    h.SetForegroundIcon(selectedIcon, selectedIconName, selectedFGColor);
+                                    h.SetForegroundColor(selectedFGColor);
+                                }
+                                break;
+                            }
+                        case Tool.IconPlacer:
+                            {
+                                if (h != null)
+                                {
+                                    h.SetIcon(selectedIcon, selectedIconName);
+                                }
+                                break;
+                            }
+                        case Tool.PaintedIconPlacerPainter:
+                            {
+                                if (h != null)
+                                {
+                                    h.SetIcon(selectedIcon, selectedIconName);
+                                    h.SetForegroundColor(selectedFGColor);
+                                }
+                                break;
+                            }
+                        case Tool.OmniPainter:
+                            {
+                                if (h != null)
+                                {
+                                    h.SetBackgroundColor(selectedBGColor);
+                                    h.SetIcon(selectedIcon, selectedIconName);
+                                    h.SetForegroundColor(selectedFGColor);
                                 }
                                 break;
                             }
@@ -130,16 +149,6 @@ public class Painter : MonoBehaviour {
 
     public void OnPaintBucketRightClick(Button b)
     {
-        var gameObj = b.gameObject;
-        if (gameObj != null)
-        {
-            if (gameObj.name == "paintBucket")
-            {
-                selectedFGColor = gameObj.GetComponent<Image>().color;
-                fgColorSelector.parent = gameObj.transform;
-                fgColorSelector.localPosition = Vector2.zero;
-                fgPreview.color = selectedFGColor;
-            }
-        }
+
     }
 }

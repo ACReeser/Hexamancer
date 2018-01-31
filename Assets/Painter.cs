@@ -37,6 +37,56 @@ public class Painter : MonoBehaviour {
         }
 	}
 
+    internal void OnHexClick(Hex h)
+    {
+        switch (commander.CurrentTool)
+        {
+            case Tool.BackgroundPainter:
+                {
+                    if (h != null)
+                    {
+                        h.SetBackgroundColor(selectedBGColor);
+                    }
+                    break;
+                }
+            case Tool.ForegroundPainter:
+                {
+                    if (h != null)
+                    {
+                        h.SetForegroundColor(selectedFGColor);
+                    }
+                    break;
+                }
+            case Tool.IconPlacer:
+                {
+                    if (h != null)
+                    {
+                        h.SetIcon(selectedIcon, selectedIconName);
+                    }
+                    break;
+                }
+            case Tool.PaintedIconPlacerPainter:
+                {
+                    if (h != null)
+                    {
+                        h.SetIcon(selectedIcon, selectedIconName);
+                        h.SetForegroundColor(selectedFGColor);
+                    }
+                    break;
+                }
+            case Tool.OmniPainter:
+                {
+                    if (h != null)
+                    {
+                        h.SetBackgroundColor(selectedBGColor);
+                        h.SetIcon(selectedIcon, selectedIconName);
+                        h.SetForegroundColor(selectedFGColor);
+                    }
+                    break;
+                }
+        }
+    }
+
     private void SelectTool(Tool buttonI)
     {
         selectedToolBorder.parent = ToolButtons[Convert.ToInt32(buttonI)].transform;
@@ -72,83 +122,23 @@ public class Painter : MonoBehaviour {
         }
     }
 
-    void Update()
-    {
-        var gameObj = EventSystem.current.currentSelectedGameObject;
-        if (gameObj != null)
-        {
-            if(Input.GetMouseButtonUp(0))
-            {
-                if (gameObj.transform.parent == detailListParent)
-                {
-                    if (gameObj.transform.GetSiblingIndex() == 0)
-                    {
-                        fgPreview.sprite = gameObj.transform.GetChild(1).GetComponent<Image>().sprite;
-                        selectedIcon = null;
-                    }
-                    else
-                    {
-                        selectedIcon = gameObj.transform.GetChild(1).GetComponent<Image>().sprite;
-                        fgPreview.sprite = selectedIcon;
-                        selectedIconName = gameObj.name;
-                    }
-                }
-                else
-                {
-                    var h = gameObj.transform.parent.GetComponent<Hex>();
-                    switch (commander.CurrentTool)
-                    {
-                        case Tool.BackgroundPainter:
-                            {
-                                if (h != null)
-                                {
-                                    h.SetBackgroundColor(selectedBGColor);
-                                }
-                                break;
-                            }
-                        case Tool.ForegroundPainter:
-                            {
-                                if (h != null)
-                                {
-                                    h.SetForegroundColor(selectedFGColor);
-                                }
-                                break;
-                            }
-                        case Tool.IconPlacer:
-                            {
-                                if (h != null)
-                                {
-                                    h.SetIcon(selectedIcon, selectedIconName);
-                                }
-                                break;
-                            }
-                        case Tool.PaintedIconPlacerPainter:
-                            {
-                                if (h != null)
-                                {
-                                    h.SetIcon(selectedIcon, selectedIconName);
-                                    h.SetForegroundColor(selectedFGColor);
-                                }
-                                break;
-                            }
-                        case Tool.OmniPainter:
-                            {
-                                if (h != null)
-                                {
-                                    h.SetBackgroundColor(selectedBGColor);
-                                    h.SetIcon(selectedIcon, selectedIconName);
-                                    h.SetForegroundColor(selectedFGColor);
-                                }
-                                break;
-                            }
-                    }
-                }
-            }
-        }
-    }
-
     public void OnPaintBucketRightClick(Button b)
     {
 
+    }
+
+    public void OnIconListClick(Button b)
+    {
+        if (b.transform.GetSiblingIndex() == 0)
+        {
+            fgPreview.sprite = b.transform.GetChild(1).GetComponent<Image>().sprite;
+            selectedIcon = null;
+        }
+        else
+        {
+            selectedIcon = b.transform.GetChild(1).GetComponent<Image>().sprite;
+            fgPreview.sprite = selectedIcon;
+            selectedIconName = b.gameObject.name;
+        }
     }
 }

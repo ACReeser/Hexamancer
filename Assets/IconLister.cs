@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class IconLister : MonoBehaviour {
     public LibraryLister LibraryLister;
     public RectTransform DetailList, DetailTemplate;
+    public Painter painter;
 
 	// Use this for initialization
 	void Start () {
@@ -28,7 +29,8 @@ public class IconLister : MonoBehaviour {
             else
             {
                 detail = GameObject.Instantiate(DetailTemplate, DetailList) as RectTransform;
-                detail.GetComponent<Button>().onClick.AddListener(() => this.onDetailClick(i));
+                var button = detail.GetComponent<Button>();
+                button.onClick.AddListener(() => this.onDetailClick(button));
                 DetailTemplate.SetAsLastSibling();
             }
             detail.gameObject.SetActive(true);
@@ -48,9 +50,9 @@ public class IconLister : MonoBehaviour {
         }
     }
 
-    private void onDetailClick(int index)
+    private void onDetailClick(Button button)
     {
-        
+        painter.OnIconListClick(button);
     }
 
     // Update is called once per frame

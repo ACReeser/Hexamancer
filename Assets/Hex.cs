@@ -11,6 +11,7 @@ public class Hex : MonoBehaviour {
     private int hexX, hexY;
     private string iconName;
     private Color bgColor, fgColor;
+    internal Painter painter;
 
 	// Use this for initialization
 	void Start () {
@@ -19,6 +20,7 @@ public class Hex : MonoBehaviour {
         this.iconImage = button.transform.GetChild(0).GetComponent<Image>();
         this.text = button.transform.GetChild(1).GetComponent<Text>();
         this.text.text = hexX + "," + hexY;
+        this.button.onClick.AddListener(() => painter.OnHexClick(this));
     }
 	
 	// Update is called once per frame

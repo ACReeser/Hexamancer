@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class HexGrid : MonoBehaviour {
     public RectTransform spawnThis;
+    public Painter painter;
 
     public int x = 5;
     public int y = 5;
@@ -30,6 +31,7 @@ public class HexGrid : MonoBehaviour {
                 obj.anchoredPosition = hexpos;// + new Vector2(unitLength, unitLength);
                 obj.localRotation = Quaternion.identity;
                 Hex h = obj.gameObject.AddComponent<Hex>();
+                h.painter = painter;
                 h.Assign(i, j);
             }
         }

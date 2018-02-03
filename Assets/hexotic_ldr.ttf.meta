@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 33da163f0fd3e7f41821e272c9eb757b
+timeCreated: 1517455308
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Hexotic LDR
+  fontNames:
+  - Hexotic LDR
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

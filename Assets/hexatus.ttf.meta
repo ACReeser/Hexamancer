@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 968f98a06b9202b4ead1d5ec97ea2f6b
+timeCreated: 1517455308
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Hexatus
+  fontNames:
+  - Hexatus
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

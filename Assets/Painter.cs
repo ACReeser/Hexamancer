@@ -45,7 +45,8 @@ public class Painter : MonoBehaviour {
                 {
                     if (h != null)
                     {
-                        h.SetBackgroundColor(selectedBGColor);
+                        commander.EditHex(new BucketCommand(h, selectedBGColor));
+                        //h.SetBackgroundColor(selectedBGColor);
                     }
                     break;
                 }
@@ -53,7 +54,8 @@ public class Painter : MonoBehaviour {
                 {
                     if (h != null)
                     {
-                        h.SetForegroundColor(selectedFGColor);
+                        commander.EditHex(new PaintCommand(h, selectedFGColor));
+                        //h.SetForegroundColor(selectedFGColor);
                     }
                     break;
                 }
@@ -61,7 +63,8 @@ public class Painter : MonoBehaviour {
                 {
                     if (h != null)
                     {
-                        h.SetIcon(selectedIcon, selectedIconName);
+                        commander.EditHex(new PencilCommand(h, selectedIcon, selectedIconName));
+                        //h.SetIcon();
                     }
                     break;
                 }
@@ -69,8 +72,9 @@ public class Painter : MonoBehaviour {
                 {
                     if (h != null)
                     {
-                        h.SetIcon(selectedIcon, selectedIconName);
-                        h.SetForegroundColor(selectedFGColor);
+                        commander.EditHex(new PencilPaintCommand(h, selectedFGColor, selectedIcon, selectedIconName));
+                        //h.SetIcon(selectedIcon, selectedIconName);
+                        //h.SetForegroundColor(selectedFGColor);
                     }
                     break;
                 }
@@ -78,9 +82,10 @@ public class Painter : MonoBehaviour {
                 {
                     if (h != null)
                     {
-                        h.SetBackgroundColor(selectedBGColor);
-                        h.SetIcon(selectedIcon, selectedIconName);
-                        h.SetForegroundColor(selectedFGColor);
+                        commander.EditHex(new OmniCommand(h, selectedBGColor, selectedFGColor, selectedIcon, selectedIconName));
+                        //h.SetBackgroundColor(selectedBGColor);
+                        //h.SetIcon(selectedIcon, selectedIconName);
+                        //h.SetForegroundColor(selectedFGColor);
                     }
                     break;
                 }

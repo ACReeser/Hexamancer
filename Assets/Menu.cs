@@ -8,6 +8,9 @@ public enum ViewState { LoggedOut, LoggingIn, LoggedIn, SelectLoadedMap, SetUpNe
 public class Menu : MonoBehaviour {
     public RectTransform modal, title, loggedInPanel, loggedOutPanel, loginPanel, loadMapPanel, newMapPanel;
     public Input user, pass;
+    public Commander commander;
+    public HexGrid grid;
+    public InputOutput IO;
 
     private ViewState CurrentViewState = ViewState.LoggedOut;
 
@@ -71,12 +74,17 @@ public class Menu : MonoBehaviour {
     }
     public void SetupNewMap()
     {
+        commander.SetMap(grid.CreateNewMap(21, 15, 50f));
+
         //RefreshViewState(ViewState.SetUpNewMap);
         RefreshViewState(ViewState.Closed);
     }
     public void OpenSavedMaps()
     {
-        RefreshViewState(ViewState.SelectLoadedMap);
+        IO.Load("map");
+        grid.LoadMap(commander.CurrentMap, 50f);
+        RefreshViewState(ViewState.Closed);
+        //RefreshViewState(ViewState.SelectLoadedMap);
     }
 
 

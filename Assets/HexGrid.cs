@@ -1,29 +1,47 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+[Serializable]
+public class HexGridData
+{
+    public HexData[][] Hexes; //UNITY CANNOT DESERIALIZE THIS!!!
+    public string Name = "map";
+}
 
 public class HexGrid : MonoBehaviour {
     public RectTransform spawnThis;
     public Painter painter;
+    public Commander commander;
 
-    public int x = 5;
-    public int y = 5;
+    //public int x = 21;
+    //public int y = 15;
 
-    public float radius = 0.5f;
+    //public float radius = 50f;
     public bool useAsInnerCircleRadius = true;
 
     private float offsetX, offsetY;
 
     void Start()
     {
+    }
+
+    internal HexGridData CreateNewMap(int numColumns, int numRows, float radius)
+    {
         float unitLength = (useAsInnerCircleRadius) ? (radius / (Mathf.Sqrt(3) / 2)) : radius;
 
         offsetX = unitLength * Mathf.Sqrt(3);
         offsetY = unitLength * 1.5f;
-
-        for (int i = 0; i < x; i++)
+        HexGridData newMap = new HexGridData()
         {
-            for (int j = 0; j < y; j++)
+            Hexes = new HexData[numColumns][]
+        };
+
+        for (int i = 0; i < numColumns; i++)
+        {
+            newMap.Hexes[i] = new HexData[numRows];
+            for (int j = 0; j < numRows; j++)
             {
                 Vector2 hexpos = HexOffset(i, j);
                 Vector3 pos = new Vector3(hexpos.x, hexpos.y, 0);
@@ -32,7 +50,42 @@ public class HexGrid : MonoBehaviour {
                 obj.localRotation = Quaternion.identity;
                 Hex h = obj.gameObject.AddComponent<Hex>();
                 h.painter = painter;
-                h.Assign(i, j);
+                h.Assign(new HexData()
+                {
+                    HexX = i,
+                    HexY = j,
+                    BackgroundColor = Color.white,
+                    ForegroundColor = Color.black,
+                    IconName = ""
+                });
+                newMap.Hexes[i][j] = h.Data;
+            }
+        }
+
+        return newMap;
+    }
+
+    internal void LoadMap(HexGridData data, float radius)
+    {
+        float unitLength = (useAsInnerCircleRadius) ? (radius / (Mathf.Sqrt(3) / 2)) : radius;
+
+        offsetX = unitLength * Mathf.Sqrt(3);
+        offsetY = unitLength * 1.5f;
+
+        for (int i = 0; i < data.Hexes.Length; i++)
+        {
+            int numRows = data.Hexes[i].Length;
+
+            for (int j = 0; j < numRows; j++)
+            {
+                Vector2 hexpos = HexOffset(i, j);
+                Vector3 pos = new Vector3(hexpos.x, hexpos.y, 0);
+                var obj = Instantiate<RectTransform>(spawnThis, this.transform);
+                obj.anchoredPosition = hexpos;// + new Vector2(unitLength, unitLength);
+                obj.localRotation = Quaternion.identity;
+                Hex h = obj.gameObject.AddComponent<Hex>();
+                h.painter = painter;
+                h.Assign(data.Hexes[i][j]);
             }
         }
     }

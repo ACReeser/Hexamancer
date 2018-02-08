@@ -14,14 +14,17 @@ public class Library
 }
 
 public class InputOutput : MonoBehaviour {
+    private const float AutosaveDelay = .5f;
+    public Commander commander;
     public Library[] Libraries;
     public delegate void HandleLibrariesLoaded(Library[] libs);
     public event HandleLibrariesLoaded OnLibrariesLoaded;
 
     private IO Engine;
+    private float? timeSinceLastChange = null;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
         Engine = GetIO();
         StartCoroutine(LoadLibraries());
 	}
@@ -41,7 +44,37 @@ public class InputOutput : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
+        if (timeSinceLastChange.HasValue)
+        {
+            timeSinceLastChange += Time.deltaTime;
 
+            if (timeSinceLastChange > AutosaveDelay)
+            {
+                Autosave();
+            }
+        }
+    }
+
+    private void Autosave()
+    {
+        timeSinceLastChange = null;
+        Save();
+        UnityEngine.Debug.Log("Autosave!");
+    }
+
+    public void OnHexChange()
+    {
+        timeSinceLastChange = 0;
+    }
+
+    public void Save()
+    {
+        Engine.Save(commander.CurrentMap);
+    }
+
+    public void Load(string mapName)
+    {
+        commander.SetMap(Engine.Load(mapName));
     }
 
     public IEnumerator LoadLibraries()
@@ -64,6 +97,8 @@ public class InputOutput : MonoBehaviour {
         Library[] LoadedLibraries { get; }
         IEnumerator GetLibraries();
         IEnumerator LoadIcons(Library lib);
+        HexGridData Load(string mapName);
+        void Save(HexGridData currentMap);
     }
 
     public class DesktopIO: IO
@@ -107,6 +142,17 @@ public class InputOutput : MonoBehaviour {
                 lib.Icons[spriteI].name = iconName;
                 spriteI++;
             }
+        }
+
+        public void Save(HexGridData data)
+        {
+            string path = Path.Combine(Application.persistentDataPath, data.Name+".json");
+            File.WriteAllText(path, JsonUtility.ToJson(data));
+        }
+        public HexGridData Load(string mapName)
+        {
+            string path = Path.Combine(Application.persistentDataPath, mapName + ".json");
+            return JsonUtility.FromJson<HexGridData>(File.ReadAllText(path));
         }
     }
 
@@ -185,6 +231,16 @@ public class InputOutput : MonoBehaviour {
                 }
                 lib.Icons = sprites.ToArray();
             }
+        }
+
+        public void Save(HexGridData data)
+        {
+
+        }
+
+        public HexGridData Load(string mapName)
+        {
+            return null;
         }
     }
 

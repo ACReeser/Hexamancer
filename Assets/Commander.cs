@@ -9,12 +9,19 @@ public enum Detail { None = 0, Icons }
 public class Commander : MonoBehaviour {
     public Tool CurrentTool { get; private set; }
     public Painter painterUI;
+    public InputOutput IO;
 
     internal Stack<ICommand> pastCommands = new Stack<ICommand>();
     internal Stack<ICommand> futureCommands = new Stack<ICommand>();
+    internal HexGridData CurrentMap { get; private set; }
 
-	// Use this for initialization
-	void Start () {
+    internal void SetMap(HexGridData hexGridData)
+    {
+        this.CurrentMap = hexGridData;
+    }
+
+    // Use this for initialization
+    void Start () {
 		
 	}
 	
@@ -39,6 +46,7 @@ public class Commander : MonoBehaviour {
         command.Do();
         pastCommands.Push(command);
         futureCommands.Clear();
+        IO.OnHexChange();
     }
 
     public void Undo()
@@ -48,6 +56,7 @@ public class Commander : MonoBehaviour {
             var command = pastCommands.Pop();
             command.Undo();
             futureCommands.Push(command);
+            IO.OnHexChange();
         }
     }
     public void Redo()
@@ -57,6 +66,7 @@ public class Commander : MonoBehaviour {
             var command = futureCommands.Pop();
             command.Do();
             pastCommands.Push(command);
+            IO.OnHexChange();
         }
     }
 }

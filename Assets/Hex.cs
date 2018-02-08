@@ -4,16 +4,32 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+[Serializable]
+public class HexData
+{
+    public int HexX, HexY;
+    public string IconName;
+    public Color BackgroundColor;
+    public Color ForegroundColor;
+
+}
+
 public class Hex : MonoBehaviour {
     private Button button;
     private Text text;
     private Image hexImage, iconImage;
-    private int hexX, hexY;
-    internal string IconName { get; private set; }
-    internal Color BackgroundColor { get; private set; }
-    internal Color ForegroundColor { get; private set; }
+
     internal Sprite Sprite { get; private set; }
+
+    public int hexX { get { return Data.HexX; } private set { Data.HexX = value; } }
+    public int hexY { get { return Data.HexY; } private set { Data.HexY = value; } }
+    internal string IconName { get { return Data.IconName; } private set { Data.IconName = value; } }
+    internal Color BackgroundColor { get { return Data.BackgroundColor; } private set { Data.BackgroundColor = value; } }
+    internal Color ForegroundColor { get { return Data.ForegroundColor; } private set { Data.ForegroundColor = value; } }
+
     internal Painter painter;
+
+    internal HexData Data { get; set; }
 
 	// Use this for initialization
 	void Start () {
@@ -23,8 +39,8 @@ public class Hex : MonoBehaviour {
         this.text = button.transform.GetChild(1).GetComponent<Text>();
         this.text.text = hexX + "," + hexY;
         this.button.onClick.AddListener(() => painter.OnHexClick(this));
-        this.BackgroundColor = Color.white;
-        this.ForegroundColor = Color.black;
+        
+        this.iconImage.enabled = IconName != null && IconName.Length > 0;
 
         if (this.iconImage.enabled)
             this.Sprite = this.iconImage.sprite;
@@ -37,10 +53,9 @@ public class Hex : MonoBehaviour {
 		
 	}
 
-    public void Assign(int x, int y)
+    public void Assign(HexData data)
     {
-        hexX = x;
-        hexY = y;
+        this.Data = data;
     }
 
     internal void SetBackgroundColor(Color selectedColor)

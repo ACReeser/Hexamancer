@@ -11,7 +11,8 @@ public class HexData
     public string IconName;
     public Color BackgroundColor;
     public Color ForegroundColor;
-
+    [NonSerialized]
+    public Sprite Sprite;
 }
 
 public class Hex : MonoBehaviour {
@@ -31,6 +32,8 @@ public class Hex : MonoBehaviour {
 
     internal HexData Data { get; set; }
 
+    private bool started = false;
+
 	// Use this for initialization
 	void Start () {
         this.button = transform.GetChild(0).GetComponent<Button>();
@@ -46,16 +49,24 @@ public class Hex : MonoBehaviour {
             this.Sprite = this.iconImage.sprite;
         else
             this.Sprite = null;
+
+        started = true;
+        RefreshView();
     }
 	
-	// Update is called once per frame
-	void Update () {
-		
+	private void RefreshView() {
+        if (Data != null && started)
+        {
+            SetBackgroundColor(Data.BackgroundColor);
+            SetForegroundColor(Data.ForegroundColor);
+            SetIcon(Data.Sprite, Data.IconName);
+        }		
 	}
 
     public void Assign(HexData data)
     {
-        this.Data = data;
+        Data = data;
+        RefreshView();
     }
 
     internal void SetBackgroundColor(Color selectedColor)

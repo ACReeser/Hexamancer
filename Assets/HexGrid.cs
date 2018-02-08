@@ -6,14 +6,48 @@ using UnityEngine;
 [Serializable]
 public class HexGridData
 {
-    public HexData[][] Hexes; //UNITY CANNOT DESERIALIZE THIS!!!
+    [SerializeField]
+    private HexData[] flatHexes;
+    public HexData[,] Hexes { get; private set; }
+    public int NumberOfColumns, NumberOfRows;
     public string Name = "map";
+    public void PrepareForSerialization()
+    {
+        if (flatHexes == null)
+        {
+            flatHexes = new HexData[NumberOfColumns * NumberOfRows];
+            int i = 0;
+            foreach(HexData h in Hexes)
+            {
+                flatHexes[i] = h;
+                i++;
+            }
+        }
+    }
+    public void DoAfterDeserialization()
+    {
+        Hexes = new HexData[NumberOfColumns, NumberOfRows];
+
+        foreach (HexData h in flatHexes)
+        {
+            Hexes[h.HexX, h.HexY] = h;
+        }
+    }
+
+    public HexGridData() { }
+    public HexGridData(int cols, int rows)
+    {
+        NumberOfColumns = cols;
+        NumberOfRows = rows;
+        Hexes = new HexData[cols, rows];
+    }
 }
 
 public class HexGrid : MonoBehaviour {
     public RectTransform spawnThis;
     public Painter painter;
     public Commander commander;
+    public InputOutput IO;
 
     //public int x = 21;
     //public int y = 15;
@@ -33,14 +67,10 @@ public class HexGrid : MonoBehaviour {
 
         offsetX = unitLength * Mathf.Sqrt(3);
         offsetY = unitLength * 1.5f;
-        HexGridData newMap = new HexGridData()
-        {
-            Hexes = new HexData[numColumns][]
-        };
+        HexGridData newMap = new HexGridData(numColumns, numRows);
 
         for (int i = 0; i < numColumns; i++)
         {
-            newMap.Hexes[i] = new HexData[numRows];
             for (int j = 0; j < numRows; j++)
             {
                 Vector2 hexpos = HexOffset(i, j);
@@ -58,7 +88,7 @@ public class HexGrid : MonoBehaviour {
                     ForegroundColor = Color.black,
                     IconName = ""
                 });
-                newMap.Hexes[i][j] = h.Data;
+                newMap.Hexes[i,j] = h.Data;
             }
         }
 
@@ -72,11 +102,9 @@ public class HexGrid : MonoBehaviour {
         offsetX = unitLength * Mathf.Sqrt(3);
         offsetY = unitLength * 1.5f;
 
-        for (int i = 0; i < data.Hexes.Length; i++)
+        for (int i = 0; i < data.NumberOfColumns; i++)
         {
-            int numRows = data.Hexes[i].Length;
-
-            for (int j = 0; j < numRows; j++)
+            for (int j = 0; j < data.NumberOfRows; j++)
             {
                 Vector2 hexpos = HexOffset(i, j);
                 Vector3 pos = new Vector3(hexpos.x, hexpos.y, 0);
@@ -85,7 +113,30 @@ public class HexGrid : MonoBehaviour {
                 obj.localRotation = Quaternion.identity;
                 Hex h = obj.gameObject.AddComponent<Hex>();
                 h.painter = painter;
-                h.Assign(data.Hexes[i][j]);
+                h.Assign(data.Hexes[i,j]);
+                string iconName = data.Hexes[i, j].IconName;
+                if (IO.Libraries != null && iconName != null && iconName.Length > 0)
+                {
+                    string[] splits = iconName.Split('|');
+                    foreach(var lib in IO.Libraries)
+                    {
+                        if (lib.Name == splits[0])
+                        {
+                            if (lib.Icons != null)
+                            {
+                                foreach(var sprite in lib.Icons)
+                                {
+                                    if (sprite.name == splits[1])
+                                    {
+                                        data.Hexes[i, j].Sprite = sprite;
+                                        break;
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
             }
         }
     }

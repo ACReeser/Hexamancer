@@ -69,12 +69,15 @@ public class InputOutput : MonoBehaviour {
 
     public void Save()
     {
+        commander.CurrentMap.PrepareForSerialization();
         Engine.Save(commander.CurrentMap);
     }
 
     public void Load(string mapName)
     {
-        commander.SetMap(Engine.Load(mapName));
+        var map = Engine.Load(mapName);
+        map.DoAfterDeserialization();
+        commander.SetMap(map);
     }
 
     public IEnumerator LoadLibraries()
